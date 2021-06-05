@@ -33,27 +33,54 @@ document.querySelector(".js-hard").addEventListener('click', () => {
     init();
 });
 const showBlockContent = (index) => {
+    const block = blocks[index];
 
+    blocks = [
+        ...blocks.slice(0, index),
+        {
+            ...block,
+            value: 1,
+        },
+        ...blocks.slice(index + 1),
+    ]
+    render();
 }
+
 
 const markBlockContent = (index) => {
+    const block = blocks[index];
 
+    blocks = [
+        ...blocks.slice(0, index),
+        {
+            ...block,
+            value: 2,
+        },
+        ...blocks.slice(index + 1),
+    ]
+    render();
 }
 
-// const bindLeftMouseButtonEvents = () => {
-//     boardBlocks.forEach((clickBlock, index) => {
-//         clickBlock.addEventListener("click", () => {
-//             showBlockContent(index);
-//         });
-//     });
-// };
-// const bindRightMouseButtonEvents = () => {
-//     boardBlocks.forEach((clickBlock, index) => {
-//         clickBlock.addEventListener("contextmenu", () => {
-//             markBlockContent(index);
-//         });
-//     });
-// };
+const bindLeftMouseButtonEvents = () => {
+    const blocksLeftClick = document.querySelectorAll(".js-blocks");
+
+    blocksLeftClick.forEach((block, index) => {
+        block.addEventListener("click", () => {
+            showBlockContent(index);
+        });
+    });
+};
+
+const bindRightMouseButtonEvents = () => {
+    const blocksRightClick = document.querySelectorAll(".js-blocks");
+
+    blocksRightClick.forEach((clickBlock, index) => {
+        clickBlock.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+            markBlockContent(index);
+        });
+    });
+};
 
 const drawBombIndex = () => {
     let bombIndex = [];
@@ -89,7 +116,8 @@ const placeBombs = () => {
                 ...blocks.slice(0, index),
                 {
                     ...block,
-                    content: bomb
+                    content: bomb,
+                    bomb: true,
                 },
                 ...blocks.slice(index + 1),
             ]
@@ -106,7 +134,7 @@ const fillScore = () => {
 
 const fillBlocks = () => {
     for (let i = 0; i < boardSize ** 2; i++) {
-        blocks[i] ={ content: " " };
+        blocks[i] = { content: " ", bomb: false, value: 0 };
     };
     render();
 };
@@ -117,6 +145,7 @@ const renderBoard = () => {
         .map(block => `
             <div class="playBoard__block playBoard__block--hidden  js-blocks" >
             ${block.content}
+            ${block.value ? block.value : ""}
             </div>
         `)
         .join("")
@@ -125,8 +154,10 @@ const renderBoard = () => {
 };
 const render = () => {
     renderBoard();
-    // bindLeftMouseButtonEvents();
-    // bindRightMouseButtonEvents();
+
+
+    bindLeftMouseButtonEvents();
+    bindRightMouseButtonEvents();
 };
 
 const init = () => {
