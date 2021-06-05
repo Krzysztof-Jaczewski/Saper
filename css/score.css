@@ -1,0 +1,19 @@
+.score {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: space-between;
+    height: 50px;
+    padding: 10px;
+    color: yellow;
+    font-size: 24px;
+    background-color: #CDD0D1;
+    box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.84), inset -2px -2px 2px 0px rgba(0, 0, 0, 0.84);
+}
+
+.score__content {
+    height: 30px;
+    width: 60px;
+    padding: 4px;
+    font-size: 20px;
+    background-color: #222222;
+}

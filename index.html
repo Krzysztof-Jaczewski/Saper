@@ -1,33 +1,39 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/box.css">
+	<link rel="stylesheet" href="css/difficulty.css">
+	<link rel="stylesheet" href="css/playBoard.css">
+	<link rel="stylesheet" href="css/score.css">
 	<link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
-    integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
-    crossorigin="anonymous" />
-	
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+		integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+		crossorigin="anonymous" />
 	<script defer src="js/script.js"></script>
-    <title>Saper</title>
+	<title>Saper</title>
 </head>
-<body oncontextmenu="return false">
-	<h1 class="header" >Saper</h1>
-	<main class="box" >
-		<section class="box__score">
-			<div class="box__flagCounter"></div>
-			<div class="box__face"></div>
-			<div class="box__timer"></div>
-        </section>
-    	<section class="playBoard" ></section>  
-		<h2 class="header" >Choose Difficulty:</h2>
-    	<section class="difficulty" >			
-    		<button class="easy">Easy</button>
-    		<button class="medium">Medium</button>
-    		<button class="hard">Hard</button>
-        </section>  
+
+<body>
+	<h1 class="header">Saper</h1>
+	<main class="box">
+		<section class="score">
+			<div class="score__content js-flagCounter"></div>
+			<div class="score__content js-face"></div>
+			<div class="score__content js-timer"></div>
+		</section>
+		<section class="playBoard"></section>
+		<h2 class="header">Choose Difficulty:</h2>
+		<section class="difficulty">
+			<button class="js-easy">Easy</button>
+			<button class="js-medium">Medium</button>
+			<button class="js-hard">Hard</button>
+		</section>
 	</main>
 </body>
+
 </html>

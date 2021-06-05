@@ -11,7 +11,7 @@ var sadFace = '<i class="fas fa-frown-o" aria-hidden="true"></i>';
 // const timerElement = documsent.querySelector(".box__timer");
 const playBoard = document.querySelector(".box");
 
-document.querySelector(".easy").addEventListener('click', () => {
+document.querySelector(".js-easy").addEventListener('click', () => {
     playBoard.classList.remove("box--medium");
     playBoard.classList.remove("box--hard");
     boardSize = 9;
@@ -19,7 +19,7 @@ document.querySelector(".easy").addEventListener('click', () => {
     fillBoard();
 });
 
-document.querySelector(".medium").addEventListener('click', () => {
+document.querySelector(".js-medium").addEventListener('click', () => {
     playBoard.classList.remove("box--hard");
     playBoard.classList.add("box--medium");
     boardSize = 14;
@@ -27,7 +27,7 @@ document.querySelector(".medium").addEventListener('click', () => {
     fillBoard();
 });
 
-document.querySelector(".hard").addEventListener('click', () => {
+document.querySelector(".js-hard").addEventListener('click', () => {
     playBoard.classList.remove("box--medium");
     playBoard.classList.add("box--hard");
     boardSize = 20;
@@ -45,9 +45,9 @@ document.querySelector(".hard").addEventListener('click', () => {
 
 const fillBoard = () => {
     const board = document.querySelector(".playBoard")
-    document.querySelector(".box__flagCounter").innerHTML = bombNumber;
-    document.querySelector(".box__face").innerHTML = `<span>😐︁</span>`
-    document.querySelector(".box__timer").innerHTML = 0;
+    document.querySelector(".js-flagCounter").innerHTML = bombNumber;
+    document.querySelector(".js-face").innerHTML = `<span>😐︁</span>`
+    document.querySelector(".js-timer").innerHTML = 0;
 
     var boardBlocks = "";
     for (let i = 0; i < boardSize ** 2; i++) {

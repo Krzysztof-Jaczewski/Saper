@@ -1,0 +1,12 @@
+.box {
+    margin: 10px;
+    width: 270px;
+}
+
+.box--medium {
+    width: 420px;
+}
+
+.box--hard {
+    width: 600px;
+}

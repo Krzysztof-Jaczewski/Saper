@@ -1,0 +1,17 @@
+.playBoard {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #CDD0D1;
+    justify-content: center;
+    align-items: center;
+}
+
+.playBoard__block {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.playBoard__block--hiden {
+    box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.84), inset -2px -2px 2px 0px rgba(0, 0, 0, 0.84);
+}
