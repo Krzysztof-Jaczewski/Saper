@@ -1,9 +1,9 @@
 .playBoard {
     display: flex;
     flex-wrap: wrap;
-    background-color: #CDD0D1;
     justify-content: center;
     align-items: center;
+    background-color: #CDD0D1;
 }
 
 .playBoard__block {
@@ -11,7 +11,11 @@
     width: 30px;
     height: 30px;
     cursor: pointer;
-    z-index: 0;
+}
+
+.playBoard__block--disabled{
+    pointer-events: none;
+    cursor: none;
 }
 
 .playBoard__block--hidden {
