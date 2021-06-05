@@ -1,0 +1,98 @@
+html {
+    box-sizing: border-box;
+}
+
+*, ::after, ::before {
+    box-sizing: inherit;
+    margin: 0;
+}
+
+body {
+    margin: 0 auto;
+    max-width: 620px;
+    user-select: none;
+    background-color: #4EB1BA;
+    text-align: center;
+}
+
+.header {
+    color: #E9E9E9;
+    padding: 20px;
+    margin: 0;
+}
+
+.box {
+    margin: 10px;
+    width: 270px;
+}
+
+.box--medium {
+    width: 420px;
+}
+
+.box--hard {
+    width: 600px;
+}
+
+.box__score {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: space-between;
+    height: 50px;
+    padding: 10px;
+    color: yellow;
+    font-size: 24px;
+    background-color: #CDD0D1;
+    box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.84), inset -2px -2px 2px 0px rgba(0, 0, 0, 0.84);
+}
+
+.box__flagCounter {
+    height: 30px;
+    width: 50px;
+    background-color: #222222;
+    font-size: 24px;
+}
+
+.box__face {
+    height: 30px;
+    width: 60px;
+    font-size: 24px;
+    background-color: #222222;
+}
+
+.box__timer {
+    height: 30px;
+    width: 50px;
+    background-color: #222222;
+}
+
+.difficulty {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: center;
+    grid-gap: 10px;
+    padding: 10px;
+}
+
+.playBoard {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #CDD0D1;
+    justify-content: center;
+    align-items: center;
+}
+
+.playBoard__block {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.playBoard__block--hiden {
+    box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.84), inset -2px -2px 2px 0px rgba(0, 0, 0, 0.84);
+}
+
+.odkryty {
+    background-color: #E3E5E6;
+    color: green;
+}
