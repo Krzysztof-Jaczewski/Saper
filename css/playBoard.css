@@ -7,11 +7,13 @@
 }
 
 .playBoard__block {
+    padding: 5px;
     width: 30px;
     height: 30px;
     cursor: pointer;
+    z-index: 0;
 }
 
-.playBoard__block--hiden {
+.playBoard__block--hidden {
     box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.84), inset -2px -2px 2px 0px rgba(0, 0, 0, 0.84);
 }
