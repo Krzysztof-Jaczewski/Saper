@@ -1,14 +1,8 @@
 
-let plansza = [];
-var boardSize = 9;
+let boardSize = 9;
 let bombNumber = 10;
-var ikonaFlagi = '<i class="fas fa-flag" aria-hidden="true"></i>';
-var ikonaZnakuZapytania = '<i class="fas fa-question" aria-hidden="true"></i>';
-var ikonaBomby = '<i class="fas fa-bomb" aria-hidden="true"></i>';
-var normalFace = '<i class="fas fa-meh-o" aria-hidden="true"></i>';
-var happyFace = '<i class="fas fa-smile-o" aria-hidden="true"></i>';
-var sadFace = '<i class="fas fa-frown-o" aria-hidden="true"></i>';
-// const timerElement = documsent.querySelector(".box__timer");
+
+// const timerElement = documsent.querySelector(".js-timer");
 const playBoard = document.querySelector(".box");
 
 document.querySelector(".js-easy").addEventListener('click', () => {
@@ -42,6 +36,22 @@ document.querySelector(".js-hard").addEventListener('click', () => {
 //         element.addEventListener("click" , funkcje[i][0], false);
 //     });
 // }
+const drawBombIndex = ()=>{
+    let bombIndex = [];
+    for(let i=0;i<bombNumber;i++){
+        bombIndex[i] = Math.floor((Math.random()*boardSize**2)+1);
+    }
+    console.log(bombIndex)
+    return bombIndex;
+}
+
+const  placeBombs = () =>{
+    const bombsIndex = drawBombIndex();
+    const bombPlacement = document.querySelectorAll(".js-blocks");
+    bombPlacement.forEach((block,index) => {
+        if(bombsIndex.includes(index))block.innerHTML =`<span>💣︁</span>`
+    });
+}
 
 const fillBoard = () => {
     const board = document.querySelector(".playBoard")
@@ -49,11 +59,11 @@ const fillBoard = () => {
     document.querySelector(".js-face").innerHTML = `<span>😐︁</span>`
     document.querySelector(".js-timer").innerHTML = 0;
 
-    var boardBlocks = "";
+    var boardBlocks = " ";
     for (let i = 0; i < boardSize ** 2; i++) {
         boardBlocks += `
-            <div 
-            class="playBoard__block playBoard__block--hiden" >
+            <div class="playBoard__block js-blocks" >
+           
             </div>
         `
     };
@@ -67,7 +77,7 @@ const fillBoard = () => {
 
 const init = () => {
     fillBoard();
-    
+    placeBombs();
 };
 
 init();
