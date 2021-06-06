@@ -17,14 +17,13 @@ const fillBlocks = () => {
     for (let i = 0; i < boardSize ** 2; i++) {
         blocks[i] = {
             content: ``,
-            mine:false,
+            mine: false,
         };
     };
     render();
 };
 const fillValues = () => {
-    const allBlocks = document.querySelectorAll(".js-blocks");
-    allBlocks.forEach((x, index) => {
+    blocks.forEach((block, index) => {
         const top = index - boardSize;
         const bottom = index + boardSize;
         const left = index - 1;
@@ -38,23 +37,23 @@ const fillValues = () => {
         }
 
         if (index % boardSize > 0 && top > 0 && blocks[top - 1].mine) mineAround++;
-   
+
         if (top >= 0 && blocks[top].mine) mineAround++;
-     
-        if (index % boardSize < boardSize-1 && top >= 0 && blocks[top + 1].mine) mineAround++;
-      
+
+        if (index % boardSize < boardSize - 1 && top >= 0 && blocks[top + 1].mine) mineAround++;
+
         if (index % boardSize > 0 && blocks[left].mine) mineAround++;
-     
-        if(index<80){ if (index % boardSize < boardSize-1 && blocks[right].mine) mineAround++;}
+
+        if (index < 80) { if (index % boardSize < boardSize - 1 && blocks[right].mine) mineAround++; }
 
         if (index % boardSize > 0 && bottom <= 80 && blocks[bottom - 1].mine) mineAround++;
 
         if (bottom <= 80 && blocks[bottom].mine) mineAround++;
 
-        if (index % boardSize < boardSize-1 && bottom < 80 && blocks[bottom + 1].mine) mineAround++;
+        if (index % boardSize < boardSize - 1 && bottom < 80 && blocks[bottom + 1].mine) mineAround++;
 
-        blocks[index].value = mineAround;
-       
+        block.value = mineAround;
+
         render();
     });
 };
@@ -96,36 +95,64 @@ const disableAllBlocks = () => {
     face = `<span>😵︁</span>`;
     renderScore();
 }
+const endGame = (index, block) => {
+    blocks = [
+        ...blocks.slice(0, index),
+        {
+            ...block,
+            content: bomb,
+            cliked: true,
+        },
+        ...blocks.slice(index + 1),
+    ]
+
+}
+
+const revealBlock = (index) => {
+    blocks = [
+        ...blocks.slice(0, index),
+        {
+            ...blocks[index],
+            cliked: true,
+            disabled: true,
+        },
+        ...blocks.slice(index + 1),
+    ]
+}
+
+const revealEmptySpaceAndNumbersAround = (index) => {
+    const top = index - boardSize;
+    const bottom = index + boardSize;
+    const left = index - 1;
+    const right = index + 1;
+    if (blocks[index].value === 0) {
+        revealBlock(index);
+        revealBlock(top - 1,);
+        revealBlock(top);
+        revealBlock(top + 1);
+        revealBlock(left);
+        revealBlock(right);
+        revealBlock(bottom - 1);
+        revealBlock(bottom);
+        revealBlock(bottom + 1);
+    }
+}
 
 
 const showBlockContent = (index) => {
     const block = blocks[index];
     if (!block.marked) {
         if (block.mine) {
-
-            blocks = [
-                ...blocks.slice(0, index),
-                {
-                    ...block,
-                    content: bomb,
-                    cliked: true,
-                },
-                ...blocks.slice(index + 1),
-            ]
+            endGame(index, block);
             disableAllBlocks();
         }
         else if (block.value) {
-            blocks = [
-                ...blocks.slice(0, index),
-                {
-                    ...block,
-                    cliked: true,
-                    disabled: true,
-                },
-                ...blocks.slice(index + 1),
-            ]
+            revealBlock(index, block);
             face = `<span>😐︁</span>`
-        };
+        } else {
+            revealEmptySpaceAndNumbersAround(index, block);
+            face = `<span>😐︁</span>`
+        }
     }
     render();
 }
@@ -251,8 +278,10 @@ const renderBoard = () => {
     board.innerHTML = boardBlocks;
 };
 
-const clearBoard = () => blocks = [];
-
+const clearBoard = () => {
+    blocks = [];
+    face = `<span>😐︁</span>`;
+}
 
 const render = () => {
     renderBoard();
