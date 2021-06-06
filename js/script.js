@@ -96,18 +96,27 @@ const disableAllBlocks = () => {
     face = `<span>😵︁</span>`;
     renderScore();
 }
-const endGame = (index, block) => {
+
+const endGame = (index) => {
     blocks = [
         ...blocks.slice(0, index),
         {
-            ...block,
+            ...blocks[index],
             content: bomb,
             cliked: true,
         },
         ...blocks.slice(index + 1),
     ]
+    blocks.forEach(block =>{
+        if(block.mine){
+            block.value=bomb;
+            block.cliked=true;
+            block.disabled=true;
 
-}
+        };
+    });
+    render();
+};
 
 const revealBlock = (index) => {
     blocks = [
@@ -149,13 +158,12 @@ const revealEmptySpaceAndNumbersAround = (index) => {
 
 
 const showBlockContent = (index) => {
-    const block = blocks[index];
-    if (!block.marked) {
-        if (block.mine) {
+    if (!blocks[index].marked) {
+        if (blocks[index].mine) {
             endGame(index);
             disableAllBlocks();
         }
-        else if (!block.value) {
+        else if (!blocks[index].value) {
             revealEmptySpaceAndNumbersAround(index);
             face = `<span>😐︁</span>`
         } else {
@@ -168,15 +176,14 @@ const showBlockContent = (index) => {
 
 
 const markBlockContent = (index) => {
-    const block = blocks[index];
     const flag = `<span>F</span>`;
     const questionMark = `<span>?︁</span>`;
 
-    if (block.content === "") {
+    if (blocks[index].content === "") {
         blocks = [
             ...blocks.slice(0, index),
             {
-                ...block,
+                ...blocks[index],
                 content: flag,
                 marked: true,
                 visible: true,
@@ -184,11 +191,11 @@ const markBlockContent = (index) => {
             ...blocks.slice(index + 1),
         ];
         bombNumber--;
-    } else if (block.content === flag) {
+    } else if (blocks[index].content === flag) {
         blocks = [
             ...blocks.slice(0, index),
             {
-                ...block,
+                ...blocks[index],
                 content: questionMark,
                 marked: true,
                 visible: true,
@@ -201,7 +208,7 @@ const markBlockContent = (index) => {
         blocks = [
             ...blocks.slice(0, index),
             {
-                ...block,
+                ...blocks[index],
                 content: "",
                 marked: false,
             },
@@ -250,7 +257,6 @@ const placeBombs = () => {
                 ...blocks.slice(0, index),
                 {
                     ...block,
-                    content: bomb,
                     mine: true,
                 },
                 ...blocks.slice(index + 1),
@@ -277,10 +283,10 @@ const renderBoard = () => {
             ${block.disabled ? "playBoard__block--disabled" : ""}
             ${block.cliked && block.mine && !block.marked ? "playBoard__block--lost " : ""}
             ${block.disabled && block.mine && !block.marked ? " playBoard__block--hidden" : ""}
-            ${!block.cliked && block.disabled && block.mine && block.marked ? "playBoard__block--correct" : ""}"
+            ${block.disabled && block.mine && block.marked ? "playBoard__block--correct" : ""}"
             >
-            ${block.content}
-            ${block.value ? block.value : ""}
+            ${block.marked && !block.cliked ? block.content:""}
+            ${block.cliked && block.value ? block.value : ""}
             </div>
         `)
         .join("")
