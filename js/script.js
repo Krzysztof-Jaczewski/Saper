@@ -2,7 +2,6 @@
 let boardSize = 9;
 let bombNumber = 10;
 const bomb = `<span>💣︁</span>`;
-let face = `<span>😐︁</span>`
 let gameEnd = false;
 
 let blocks = [{
@@ -107,11 +106,11 @@ const endGame = (index) => {
         },
         ...blocks.slice(index + 1),
     ]
-    blocks.forEach(block =>{
-        if(block.mine){
-            block.value=bomb;
-            block.cliked=true;
-            block.disabled=true;
+    blocks.forEach(block => {
+        if (block.mine) {
+            block.value = bomb;
+            block.cliked = true;
+            block.disabled = true;
 
         };
     });
@@ -135,7 +134,7 @@ const revealEmptySpaceAndNumbersAround = (index) => {
 
     if (index >= boardSize ** 2 || index < 0) return;
 
-    if (blocks[index].value === 0 && !blocks[index].cliked) {
+    if (blocks[index].value === 0 && !blocks[index].cliked &&!blocks[index].marked) {
         blocks[index].cliked = true;
         blocks[index].disabled = true;
         if (index % boardSize !== 0) {
@@ -150,7 +149,7 @@ const revealEmptySpaceAndNumbersAround = (index) => {
         }
         revealEmptySpaceAndNumbersAround(index + boardSize);
         revealEmptySpaceAndNumbersAround(index - boardSize);
-    } else {
+    } else if(!blocks[index].marked){
         revealBlock(index);
         face = `<span>😐︁</span>`;
     }
@@ -174,46 +173,54 @@ const showBlockContent = (index) => {
     render();
 }
 
+const placeFlag = (index, flag) => {
+    blocks = [
+        ...blocks.slice(0, index),
+        {
+            ...blocks[index],
+            content: flag,
+            marked: true,
+        },
+        ...blocks.slice(index + 1),
+    ];
+}
+
+const placeQuestionMark = (index, questionMark) => {
+    blocks = [
+        ...blocks.slice(0, index),
+        {
+            ...blocks[index],
+            content: questionMark,
+            marked: true,
+        },
+        ...blocks.slice(index + 1),
+    ];
+};
+
+const clearContent = (index) => {
+    blocks = [
+        ...blocks.slice(0, index),
+        {
+            ...blocks[index],
+            content: "",
+            marked: false,
+        },
+        ...blocks.slice(index + 1),
+    ];
+};
 
 const markBlockContent = (index) => {
     const flag = `<span>F</span>`;
     const questionMark = `<span>?︁</span>`;
 
     if (blocks[index].content === "") {
-        blocks = [
-            ...blocks.slice(0, index),
-            {
-                ...blocks[index],
-                content: flag,
-                marked: true,
-                visible: true,
-            },
-            ...blocks.slice(index + 1),
-        ];
+        placeFlag(index, flag);
         bombNumber--;
     } else if (blocks[index].content === flag) {
-        blocks = [
-            ...blocks.slice(0, index),
-            {
-                ...blocks[index],
-                content: questionMark,
-                marked: true,
-                visible: true,
-
-            },
-            ...blocks.slice(index + 1),
-        ];
+        placeQuestionMark(index, questionMark);
         bombNumber++;
     } else {
-        blocks = [
-            ...blocks.slice(0, index),
-            {
-                ...blocks[index],
-                content: "",
-                marked: false,
-            },
-            ...blocks.slice(index + 1),
-        ];
+        clearContent(index);
     }
     face = `<span>😐︁</span>`;
     render();
@@ -248,23 +255,27 @@ const drawBombIndex = () => {
     return bombIndex;
 };
 
+const placeMineInBlocks = (block, index) => {
+    blocks = [
+        ...blocks.slice(0, index),
+        {
+            ...block,
+            mine: true,
+        },
+        ...blocks.slice(index + 1),
+    ];
+};
+
 const placeBombs = () => {
     const bombsIndex = drawBombIndex();
     console.log(bombsIndex);
     blocks.forEach((block, index) => {
         if (bombsIndex.includes(index)) {
-            blocks = [
-                ...blocks.slice(0, index),
-                {
-                    ...block,
-                    mine: true,
-                },
-                ...blocks.slice(index + 1),
-            ]
+            placeMineInBlocks(block, index);
         }
     });
     render();
-}
+};
 
 const renderScore = () => {
     document.querySelector(".js-flagCounter").innerHTML = bombNumber;
@@ -281,11 +292,10 @@ const renderBoard = () => {
             js-blocks
             ${!block.cliked ? " playBoard__block--hidden" : ""}
             ${block.disabled ? "playBoard__block--disabled" : ""}
-            ${block.cliked && block.mine && !block.marked ? "playBoard__block--lost " : ""}
-            ${block.disabled && block.mine && !block.marked ? " playBoard__block--hidden" : ""}
+            ${block.cliked && block.mine ? "playBoard__block--lost " : ""}
             ${block.disabled && block.mine && block.marked ? "playBoard__block--correct" : ""}"
             >
-            ${block.marked && !block.cliked ? block.content:""}
+            ${block.marked && !block.cliked ? block.content : ""}
             ${block.cliked && block.value ? block.value : ""}
             </div>
         `)
@@ -296,7 +306,7 @@ const renderBoard = () => {
 const clearBoard = () => {
     blocks = [];
     face = `<span>😐︁</span>`;
-}
+};
 
 const render = () => {
     renderBoard();
