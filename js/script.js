@@ -1,74 +1,63 @@
 
-let boardSize = 5;
+let boardSize = 9;
 let bombNumber = 10;
 const bomb = `<span>💣︁</span>`;
 let face = `<span>😐︁</span>`
+let gameEnd = false;
 
 let blocks = [{
     content: "",
     value: 0,
     cliked: false,
-    danger: false,
+    mine: false,
     marked: false,
 }];
 
 const fillBlocks = () => {
     for (let i = 0; i < boardSize ** 2; i++) {
         blocks[i] = {
-            content: `${i}`,
-            value: 0,
-            cliked: false,
-            danger: false,
-            marked: false,
+            content: ``,
+            mine:false,
         };
     };
     render();
 };
-// const fillValues = () => {
-//     const allBlocks = document.querySelectorAll(".js-blocks");
-//     allBlocks.forEach((block, index) => {
-//         let bombsAround = 0;
-//         if (blocks[index].danger) {
-//             blocks = [
-//                 ...blocks.slice(0, index),
-//                 {
-//                     ...block,
-//                 },
-//                 ...blocks.slice(index + 1),
-//             ]
-//         }
+const fillValues = () => {
+    const allBlocks = document.querySelectorAll(".js-blocks");
+    allBlocks.forEach((x, index) => {
+        const top = index - boardSize;
+        const bottom = index + boardSize;
+        const left = index - 1;
+        const right = index + 1;
+        let mineAround = 0;
 
-//         if (index % boardSize === 0 && index>boardSize) {
-//             if (blocks[index + 1].danger) bombsAround++;
-//             if (blocks[index - boardSize].danger) bombsAround++;
-//             if (blocks[index - boardSize + 1].danger) bombsAround++;
-//             if (blocks[index + boardSize].danger) bombsAround++;
-//             if (blocks[index + boardSize + 1].danger) bombsAround++;
-//         } else if (index % boardSize === boardSize - 1) {
-//             if (blocks[index - 1].danger) bombsAround++;
-//             if (blocks[index - boardSize].danger) bombsAround++;
-//             if (blocks[index - boardSize - 1].danger) bombsAround++;
-//             if (blocks[index + boardSize].danger) bombsAround++;
-//             if (blocks[index + boardSize - 1].danger) bombsAround++;
-//         } else {
-//             if (blocks[index - 1].danger) bombsAround++;
-//             if (blocks[index - boardSize].danger) bombsAround++;
-//             if (blocks[index - boardSize - 1].danger) bombsAround++;
-//             if (blocks[index + boardSize].danger) bombsAround++;
-//             if (blocks[index + boardSize - 1].danger) bombsAround++;
-//         }
-//         blocks = [
-//             ...blocks.slice(0, index),
-//             {
-//                 ...block,
-//                 value: bombsAround,
-//             },
-//             ...blocks.slice(index + 1),
-//         ]
-//     });
-//     render();
-// };
-// const bindDifficultyEvents = () => {
+        if (blocks[index].mine) {
+            mineAround = " "
+            blocks[index].value = mineAround;
+            return;
+        }
+
+        if (index % boardSize > 0 && top > 0 && blocks[top - 1].mine) mineAround++;
+   
+        if (top >= 0 && blocks[top].mine) mineAround++;
+     
+        if (index % boardSize < boardSize-1 && top >= 0 && blocks[top + 1].mine) mineAround++;
+      
+        if (index % boardSize > 0 && blocks[left].mine) mineAround++;
+     
+        if(index<80){ if (index % boardSize < boardSize-1 && blocks[right].mine) mineAround++;}
+
+        if (index % boardSize > 0 && bottom <= 80 && blocks[bottom - 1].mine) mineAround++;
+
+        if (bottom <= 80 && blocks[bottom].mine) mineAround++;
+
+        if (index % boardSize < boardSize-1 && bottom < 80 && blocks[bottom + 1].mine) mineAround++;
+
+        blocks[index].value = mineAround;
+       
+        render();
+    });
+};
 const playBoard = document.querySelector(".box");
 
 playBoard.addEventListener("contextmenu", (event) => {
@@ -112,7 +101,7 @@ const disableAllBlocks = () => {
 const showBlockContent = (index) => {
     const block = blocks[index];
     if (!block.marked) {
-        if (block.danger) {
+        if (block.mine) {
 
             blocks = [
                 ...blocks.slice(0, index),
@@ -211,7 +200,7 @@ const drawBombIndex = () => {
     let bombIndex = [];
     for (let i = 0; i < bombNumber; i++) {
         bombIndex[i] = Math.floor((Math.random() * boardSize ** 2) + 1);
-        if (bombIndex.slice(0,-1).includes(bombIndex[i]))i--;
+        if (bombIndex.slice(0, -1).includes(bombIndex[i])) i--;
     };
     return bombIndex;
 };
@@ -226,7 +215,7 @@ const placeBombs = () => {
                 {
                     ...block,
                     content: bomb,
-                    danger: true,
+                    mine: true,
                 },
                 ...blocks.slice(index + 1),
             ]
@@ -250,16 +239,15 @@ const renderBoard = () => {
             js-blocks
             ${!block.cliked ? " playBoard__block--hidden" : ""}
             ${block.disabled ? "playBoard__block--disabled" : ""}
-            ${block.cliked && block.danger && !block.marked ? "playBoard__block--lost " : ""}
-            ${block.disabled && block.danger && !block.marked ? " playBoard__block--hidden" : ""}
-            ${!block.cliked && block.disabled && block.danger && block.marked ? "playBoard__block--correct" : ""}"
+            ${block.cliked && block.mine && !block.marked ? "playBoard__block--lost " : ""}
+            ${block.disabled && block.mine && !block.marked ? " playBoard__block--hidden" : ""}
+            ${!block.cliked && block.disabled && block.mine && block.marked ? "playBoard__block--correct" : ""}"
             >
             ${block.content}
             ${block.value ? block.value : ""}
             </div>
         `)
         .join("")
-
     board.innerHTML = boardBlocks;
 };
 
@@ -274,10 +262,10 @@ const render = () => {
 };
 
 const init = () => {
-    // clearBoard();
+    clearBoard();
     fillBlocks();
     placeBombs();
-    // fillValues();
+    fillValues();
 
     render();
 };
