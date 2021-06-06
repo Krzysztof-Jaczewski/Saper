@@ -7,13 +7,12 @@ html {
     margin: 0;
 }
 
-body {
+.container{
     display: grid;
     justify-content: center;
+    background-color: #4EB1BA;
     margin: 0 auto;
     max-width: 620px;
-    user-select: none;
-    background-color: #4EB1BA;
     text-align: center;
 }
 
