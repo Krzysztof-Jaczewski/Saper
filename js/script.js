@@ -18,6 +18,7 @@ const fillBlocks = () => {
         blocks[i] = {
             content: ``,
             mine: false,
+            value: 0,
         };
     };
     render();
@@ -44,18 +45,18 @@ const fillValues = () => {
 
         if (index % boardSize > 0 && blocks[left].mine) mineAround++;
 
-        if (index < 80) { if (index % boardSize < boardSize - 1 && blocks[right].mine) mineAround++; }
+        if (index < boardSize ** 2 - 1) { if (index % boardSize < boardSize - 1 && blocks[right].mine) mineAround++; }
 
-        if (index % boardSize > 0 && bottom <= 80 && blocks[bottom - 1].mine) mineAround++;
+        if (index % boardSize > 0 && bottom <= boardSize ** 2 - 1 && blocks[bottom - 1].mine) mineAround++;
 
-        if (bottom <= 80 && blocks[bottom].mine) mineAround++;
+        if (bottom <= boardSize ** 2 - 1 && blocks[bottom].mine) mineAround++;
 
-        if (index % boardSize < boardSize - 1 && bottom < 80 && blocks[bottom + 1].mine) mineAround++;
+        if (index % boardSize < boardSize - 1 && bottom < boardSize ** 2 - 1 && blocks[bottom + 1].mine) mineAround++;
 
         block.value = mineAround;
 
-        render();
     });
+    render();
 };
 const playBoard = document.querySelector(".box");
 
@@ -118,23 +119,31 @@ const revealBlock = (index) => {
         },
         ...blocks.slice(index + 1),
     ]
+    render();
 }
 
 const revealEmptySpaceAndNumbersAround = (index) => {
-    const top = index - boardSize;
-    const bottom = index + boardSize;
-    const left = index - 1;
-    const right = index + 1;
-    if (blocks[index].value === 0) {
+
+    if (index >= boardSize ** 2 || index < 0) return;
+
+    if (blocks[index].value === 0 && !blocks[index].cliked) {
+        blocks[index].cliked = true;
+        blocks[index].disabled = true;
+        if (index % boardSize !== 0) {
+            revealEmptySpaceAndNumbersAround(index + boardSize - 1);
+            revealEmptySpaceAndNumbersAround(index - 1);
+            revealEmptySpaceAndNumbersAround(index - boardSize - 1);
+        }
+        if (index % boardSize !== boardSize - 1) {
+            revealEmptySpaceAndNumbersAround(index - boardSize + 1);
+            revealEmptySpaceAndNumbersAround(index + 1);
+            revealEmptySpaceAndNumbersAround(index + boardSize + 1);
+        }
+        revealEmptySpaceAndNumbersAround(index + boardSize);
+        revealEmptySpaceAndNumbersAround(index - boardSize);
+    } else {
         revealBlock(index);
-        revealBlock(top - 1,);
-        revealBlock(top);
-        revealBlock(top + 1);
-        revealBlock(left);
-        revealBlock(right);
-        revealBlock(bottom - 1);
-        revealBlock(bottom);
-        revealBlock(bottom + 1);
+        face = `<span>😐︁</span>`;
     }
 }
 
@@ -143,14 +152,14 @@ const showBlockContent = (index) => {
     const block = blocks[index];
     if (!block.marked) {
         if (block.mine) {
-            endGame(index, block);
+            endGame(index);
             disableAllBlocks();
         }
-        else if (block.value) {
-            revealBlock(index, block);
+        else if (!block.value) {
+            revealEmptySpaceAndNumbersAround(index);
             face = `<span>😐︁</span>`
         } else {
-            revealEmptySpaceAndNumbersAround(index, block);
+            revealBlock(index);
             face = `<span>😐︁</span>`
         }
     }
