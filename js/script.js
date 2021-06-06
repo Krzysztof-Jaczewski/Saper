@@ -2,10 +2,72 @@
 let boardSize = 9;
 let bombNumber = 10;
 const bomb = `<span>💣︁</span>`;
+let face = `<span>😐︁</span>`
 
-let blocks = [];
-// const timerElement = documsent.querySelector(".js-timer");
+let blocks = [{
+    content: "",
+    value: 1,
+    cliked: false,
+    danger: false,
+    marked: false,
+}];
 
+const fillBlocks = () => {
+    for (let i = 1; i < boardSize ** 2; i++) {
+        blocks[i] = {
+            content: ``,
+            value: 0,
+            cliked: false,
+            danger: false,
+            marked: false,
+        };
+    };
+    render();
+};
+// const fillValues = () => {
+//     const allBlocks = document.querySelectorAll(".js-blocks");
+//     allBlocks.forEach((block, index) => {
+//         let bombsAround = 0;
+//         if (blocks[index].danger) {
+//             blocks = [
+//                 ...blocks.slice(0, index),
+//                 {
+//                     ...block,
+//                 },
+//                 ...blocks.slice(index + 1),
+//             ]
+//         }
+
+//         if (index % boardSize === 0 && index>boardSize) {
+//             if (blocks[index + 1].danger) bombsAround++;
+//             if (blocks[index - boardSize].danger) bombsAround++;
+//             if (blocks[index - boardSize + 1].danger) bombsAround++;
+//             if (blocks[index + boardSize].danger) bombsAround++;
+//             if (blocks[index + boardSize + 1].danger) bombsAround++;
+//         } else if (index % boardSize === boardSize - 1) {
+//             if (blocks[index - 1].danger) bombsAround++;
+//             if (blocks[index - boardSize].danger) bombsAround++;
+//             if (blocks[index - boardSize - 1].danger) bombsAround++;
+//             if (blocks[index + boardSize].danger) bombsAround++;
+//             if (blocks[index + boardSize - 1].danger) bombsAround++;
+//         } else {
+//             if (blocks[index - 1].danger) bombsAround++;
+//             if (blocks[index - boardSize].danger) bombsAround++;
+//             if (blocks[index - boardSize - 1].danger) bombsAround++;
+//             if (blocks[index + boardSize].danger) bombsAround++;
+//             if (blocks[index + boardSize - 1].danger) bombsAround++;
+//         }
+//         blocks = [
+//             ...blocks.slice(0, index),
+//             {
+//                 ...block,
+//                 value: bombsAround,
+//             },
+//             ...blocks.slice(index + 1),
+//         ]
+//     });
+//     render();
+// };
 // const bindDifficultyEvents = () => {
 const playBoard = document.querySelector(".box");
 
@@ -36,20 +98,45 @@ document.querySelector(".js-hard").addEventListener('click', () => {
     bombNumber = 60;
     init();
 });
-// }
+
+const disableAllBlocks = () => {
+    blocks = blocks.map(block => ({
+        ...block,
+        disabled: true,
+    }));
+    face = `<span>😵︁</span>`;
+    renderScore();
+}
+
 
 const showBlockContent = (index) => {
     const block = blocks[index];
     if (!block.marked) {
-        blocks = [
-            ...blocks.slice(0, index),
-            {
-                ...block,
-                value: 1,
-                cliked: true,
-            },
-            ...blocks.slice(index + 1),
-        ]
+        if (block.danger) {
+
+            blocks = [
+                ...blocks.slice(0, index),
+                {
+                    ...block,
+                    content: bomb,
+                    cliked: true,
+                },
+                ...blocks.slice(index + 1),
+            ]
+            disableAllBlocks();
+        }
+        else if (block.value) {
+            blocks = [
+                ...blocks.slice(0, index),
+                {
+                    ...block,
+                    cliked: true,
+                    disabled: true,
+                },
+                ...blocks.slice(index + 1),
+            ]
+            face = `<span>😐︁</span>`
+        };
     }
     render();
 }
@@ -67,9 +154,11 @@ const markBlockContent = (index) => {
                 ...block,
                 content: flag,
                 marked: true,
+                visible:true,
             },
             ...blocks.slice(index + 1),
-        ]
+        ];
+        bombNumber--;
     } else if (block.content === flag) {
         blocks = [
             ...blocks.slice(0, index),
@@ -77,9 +166,12 @@ const markBlockContent = (index) => {
                 ...block,
                 content: questionMark,
                 marked: true,
+                visible:true,
+
             },
             ...blocks.slice(index + 1),
-        ]
+        ];
+        bombNumber++;
     } else {
         blocks = [
             ...blocks.slice(0, index),
@@ -89,27 +181,27 @@ const markBlockContent = (index) => {
                 marked: false,
             },
             ...blocks.slice(index + 1),
-        ]
+        ];
     }
-
+    face = `<span>😐︁</span>`;
     render();
 }
+const changeFace = () => {
+    face = `<span>︁😲</span>`;
+    renderScore();
+}
 
-const bindLeftMouseButtonEvents = () => {
-    const blocksLeftClick = document.querySelectorAll(".js-blocks");
+const mouseButtonEvents = () => {
+    const blocksClick = document.querySelectorAll(".js-blocks");
 
-    blocksLeftClick.forEach((block, index) => {
+    blocksClick.forEach((block, index) => {
+        block.addEventListener("mousedown", () => {
+            changeFace();
+        });
         block.addEventListener("click", () => {
             showBlockContent(index);
         });
-    });
-};
-
-const bindRightMouseButtonEvents = () => {
-    const blocksRightClick = document.querySelectorAll(".js-blocks");
-
-    blocksRightClick.forEach((clickBlock, index) => {
-        clickBlock.addEventListener("contextmenu", () => {
+        block.addEventListener("contextmenu", () => {
             markBlockContent(index);
         });
     });
@@ -142,21 +234,10 @@ const placeBombs = () => {
     render();
 }
 
-const fillScore = () => {
+const renderScore = () => {
     document.querySelector(".js-flagCounter").innerHTML = bombNumber;
-    document.querySelector(".js-face").innerHTML = `<span>😐︁</span>`
+    document.querySelector(".js-face").innerHTML = face;
     document.querySelector(".js-timer").innerHTML = 0;
-};
-
-const fillBlocks = () => {
-    for (let i = 0; i < boardSize ** 2; i++) {
-        blocks[i] = {
-            content: "",
-            cliked: false,
-            value: 0,
-        };
-    };
-    render();
 };
 
 const renderBoard = () => {
@@ -165,16 +246,19 @@ const renderBoard = () => {
         .map(block => `
             <div class="
             playBoard__block
-             playBoard__block--hidden
-               js-blocks
-            ${block.cliked ? "playBoard__block--disabled" : ""}"
+            js-blocks
+            ${!block.cliked ? " playBoard__block--hidden" : ""}
+            ${block.disabled ? "playBoard__block--disabled" : ""}
+            ${block.cliked && block.danger && !block.marked ? "playBoard__block--lost " : ""}
+            ${block.disabled && block.danger && !block.marked ? " playBoard__block--hidden" : ""}
+            ${!block.cliked && block.disabled && block.danger && block.marked ? "playBoard__block--correct" : ""}"
             >
             ${block.content}
             ${block.value ? block.value : ""}
             </div>
         `)
         .join("")
-
+      
     board.innerHTML = boardBlocks;
 };
 
@@ -183,19 +267,17 @@ const clearBoard = () => blocks = [];
 
 const render = () => {
     renderBoard();
+    renderScore();
 
-
-    bindLeftMouseButtonEvents();
-    bindRightMouseButtonEvents();
+    mouseButtonEvents();
 };
 
 const init = () => {
     // clearBoard();
-    fillScore();
     fillBlocks();
     placeBombs();
-    // placeNumbers(bombPlacement);
+    // fillValues();
+
     render();
 };
 init();
-// bindDifficultyEvents();

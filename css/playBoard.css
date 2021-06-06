@@ -18,6 +18,14 @@
     cursor: none;
 }
 
+.playBoard__block--lost{
+    background-color: red;
+}
+
+.playBoard__block--correct{
+    background-color: green;
+}
+
 .playBoard__block--hidden {
     box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.84), inset -2px -2px 2px 0px rgba(0, 0, 0, 0.84);
 }
