@@ -216,8 +216,8 @@ const clearContent = (index) => {
 };
 
 const markBlockContent = (index) => {
-    const flag = `<span>F</span>`;
-    const questionMark = `<span>?︁</span>`;
+    const flag = `<i class="fas fa-flag"></i>`;
+    const questionMark = `<i class="fas fa-question"></i>`;
 
     if (blocks[index].content === "") {
         placeFlag(index, flag);
