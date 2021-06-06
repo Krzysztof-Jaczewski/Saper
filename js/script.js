@@ -1,7 +1,7 @@
 let boardSize = 9;
 let bombNumber = 10;
-let won = false;
 let blocks = [];
+let sekundy = 0;
 
 const fillBlocks = () => {
     for (let i = 0; i < boardSize ** 2; i++) {
@@ -20,7 +20,7 @@ const fillValues = () => {
         const left = index - 1;
         const right = index + 1;
         const verticalWall = index % boardSize;
-        const bottomWall = boardSize ** 2 - 1;
+        const lastIndex = boardSize ** 2 - 1;
         let mineAround = 0;
 
         if (blocks[index].mine) {
@@ -37,13 +37,13 @@ const fillValues = () => {
 
         if (verticalWall > 0 && blocks[left].mine) mineAround++;
 
-        if (index < bottomWall) { if (verticalWall < boardSize - 1 && blocks[right].mine) mineAround++; }
+        if (index < lastIndex) { if (verticalWall < boardSize - 1 && blocks[right].mine) mineAround++; }
 
-        if (verticalWall > 0 && bottom <= bottomWall && blocks[bottom - 1].mine) mineAround++;
+        if (verticalWall > 0 && bottom <= lastIndex && blocks[bottom - 1].mine) mineAround++;
 
-        if (bottom <= bottomWall && blocks[bottom].mine) mineAround++;
+        if (bottom <= lastIndex && blocks[bottom].mine) mineAround++;
 
-        if (verticalWall < boardSize - 1 && bottom < bottomWall && blocks[bottom + 1].mine) mineAround++;
+        if (verticalWall < boardSize - 1 && bottom < lastIndex && blocks[bottom + 1].mine) mineAround++;
 
         block.value = mineAround;
 
@@ -139,14 +139,15 @@ const revealEmptySpaceAndNumbersAround = (index) => {
     };
 };
 
-const checkIsGameWon = ()=>{
-    const clickedBloks = blocks.filter(({clicked}) => clicked).length;
-    const markedBloks = blocks.filter(({marked}) => marked).length;
-    let blocksLeft = bombNumber+markedBloks;
+
+const checkIsGameWon = () => {
+    const clickedBloks = blocks.filter(({ clicked }) => clicked).length;
+    const markedBloks = blocks.filter(({ marked }) => marked).length;
+    let blocksLeft = bombNumber + markedBloks;
     const bomb = `<span>💣︁</span>`;
 
 
-    if(boardSize**2 - clickedBloks === blocksLeft){
+    if (boardSize ** 2 - clickedBloks === blocksLeft) {
         blocks.forEach(block => {
             if (block.mine) {
                 block.value = bomb;
@@ -188,7 +189,7 @@ const placeFlag = (index, flag) => {
         },
         ...blocks.slice(index + 1),
     ];
-}
+};
 
 const placeQuestionMark = (index, questionMark) => {
     blocks = [
@@ -229,11 +230,11 @@ const markBlockContent = (index) => {
     }
     face = `<span>😐︁</span>`;
     render();
-}
+};
 const changeFace = () => {
     face = `<span>︁😲</span>`;
     renderScore();
-}
+};
 
 const mouseButtonEvents = () => {
     const blocksClick = document.querySelectorAll(".js-blocks");
@@ -273,7 +274,7 @@ const placeMineInBlocks = (block, index) => {
 
 const placeBombs = () => {
     const bombsIndex = drawBombIndex();
-    console.log(bombsIndex);
+
     blocks.forEach((block, index) => {
         if (bombsIndex.includes(index)) {
             placeMineInBlocks(block, index);
@@ -282,10 +283,17 @@ const placeBombs = () => {
     render();
 };
 
+const timer = () => {
+
+    if (!blocks.every(({ disabled }) => disabled)) {
+        document.querySelector(".js-timer").innerHTML = sekundy;
+        sekundy++;
+    };
+};
+
 const renderScore = () => {
     document.querySelector(".js-flagCounter").innerHTML = bombNumber;
     document.querySelector(".js-face").innerHTML = face;
-    document.querySelector(".js-timer").innerHTML = 0;
 };
 
 const renderBoard = () => {
@@ -325,8 +333,9 @@ const init = () => {
     fillBlocks();
     placeBombs();
     fillValues();
-
+  
+    sekundy = 0;
     render();
 };
-
+setInterval(timer, 1000);
 init();
