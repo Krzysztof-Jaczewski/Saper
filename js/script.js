@@ -1,21 +1,21 @@
 
-let boardSize = 9;
+let boardSize = 5;
 let bombNumber = 10;
 const bomb = `<span>💣︁</span>`;
 let face = `<span>😐︁</span>`
 
 let blocks = [{
     content: "",
-    value: 1,
+    value: 0,
     cliked: false,
     danger: false,
     marked: false,
 }];
 
 const fillBlocks = () => {
-    for (let i = 1; i < boardSize ** 2; i++) {
+    for (let i = 0; i < boardSize ** 2; i++) {
         blocks[i] = {
-            content: ``,
+            content: `${i}`,
             value: 0,
             cliked: false,
             danger: false,
@@ -154,7 +154,7 @@ const markBlockContent = (index) => {
                 ...block,
                 content: flag,
                 marked: true,
-                visible:true,
+                visible: true,
             },
             ...blocks.slice(index + 1),
         ];
@@ -166,7 +166,7 @@ const markBlockContent = (index) => {
                 ...block,
                 content: questionMark,
                 marked: true,
-                visible:true,
+                visible: true,
 
             },
             ...blocks.slice(index + 1),
@@ -211,9 +211,10 @@ const drawBombIndex = () => {
     let bombIndex = [];
     for (let i = 0; i < bombNumber; i++) {
         bombIndex[i] = Math.floor((Math.random() * boardSize ** 2) + 1);
-    }
+        if (bombIndex.slice(0,-1).includes(bombIndex[i]))i--;
+    };
     return bombIndex;
-}
+};
 
 const placeBombs = () => {
     const bombsIndex = drawBombIndex();
@@ -258,7 +259,7 @@ const renderBoard = () => {
             </div>
         `)
         .join("")
-      
+
     board.innerHTML = boardBlocks;
 };
 
